@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<title>Flock.js</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="user-scalable=no"/>
+		<style>
+		#content {
+			position: absolute;
+			text-align: center;
+			width: 100%;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="content"></div>
+		<script src="flock.js"></script>
+		<script src="jquery-2.0.3.min.js"></script>
+		<script src="two.min.js"></script>
+		<script>
+			var container = $('#content')[0];
+
+			$(window).load(function () {
+				new Application(container).start();
+			});
+		</script>
+	</body>
+</html>
