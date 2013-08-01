@@ -51,7 +51,7 @@ function randomWalk(agent) {
 function Agent(position, world) {
 	var self = this;
 
-	this.boidWeights = { alignment: 1, cohesion: 4, random: 3, separation: 3 };
+	this.boidWeights = { alignment: 1, cohesion: 4.25, random: 3, separation: 3 };
 	this.heading = new Two.Vector();
 	this.position = position;
 	this.velocity = new Two.Vector();
