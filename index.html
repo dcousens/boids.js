@@ -33,6 +33,11 @@
 				var view = new TwoView(conDom, model);
 				view.on('frame', model.step);
 
+				// spawn 20 by default
+				for (var i = 0; i < 20; ++i) {
+					model.spawn();
+				}
+
 				$(window).keypress(function(event) {
 					event.preventDefault();
 					event.stopPropagation();
