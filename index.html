@@ -1,26 +1,61 @@
 <html>
 	<head>
 		<title>Flock.js</title>
-		<meta charset="utf-8"/>
-		<meta name="viewport" content="user-scalable=no"/>
+		<meta charset='utf-8'/>
+		<meta name='viewport' content='user-scalable=no'/>
 		<style>
 		#content {
 			position: absolute;
 			text-align: center;
+			height: 100%;
 			width: 100%;
 		}
 		</style>
 	</head>
 	<body>
-		<div id="content"></div>
-		<script src="flock.js"></script>
-		<script src="jquery-2.0.3.min.js"></script>
-		<script src="two.min.js"></script>
+		<div id='content'></div>
+		<script src='agent.js'></script>
+		<script src='model.js'></script>
+		<script src='world.js'></script>
+		<script src='view.js'></script>
+
+		<script src='jquery-2.0.3.min.js'></script>
+		<script src='mediator.min.js'></script>
+		<script src='two.min.js'></script>
 		<script>
-			var container = $('#content')[0];
+			var container = $('#content');
+			var conDom = container[0];
 
 			$(window).load(function () {
-				new Application(container).start();
+				var world = new WrappedWorld(window.innerWidth, window.innerHeight);
+
+				var model = new Model(world);
+				var view = new TwoView(conDom, model);
+				view.on('frame', model.step);
+
+				$(window).keypress(function(event) {
+					event.preventDefault();
+					event.stopPropagation();
+
+					switch (event.charCode) {
+						case 97: { // 'a'
+							model.spawn();
+
+							break;
+						}
+
+						case 122: { // 'z'
+							model.despawn();
+
+							break;
+						}
+					}
+				});
+
+				$(window).resize(function() {
+					world.width = window.innerWidth;
+					world.height = window.innerHeight;
+				});
 			});
 		</script>
 	</body>
