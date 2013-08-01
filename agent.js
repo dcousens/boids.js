@@ -7,27 +7,27 @@ function boids(agent, neighbours, world, weights) {
 	var brownian = new Vector2(Math.sin(theta), Math.cos(theta));
 
 	if (neighbours.length) {
-		var vector = new Vector2();
+		var vec = new Vector2();
 
 		_.each(neighbours, function(neighbour) {
 			// alignment is the average of all neighbouring headings
 			alignment.addSelf(neighbour.heading);
 
 			// cohesion is just the centroid of all neighbours
-			vector = world.vectorDiff(neighbour.position, agent.position, vector);
-			cohesion.addSelf(vector);
+			vec = world.vectorDiff(neighbour.position, agent.position, vec);
+			cohesion.addSelf(vec);
 
 			// influence by inverse of the distance (squared for normalization)
-			var dist = vector.lengthSq();
-			vector.divideScalar(dist)
+			var dist = vec.lengthSq();
+			vec.divideScalar(dist)
 
-			separation.addSelf(vector);
+			separation.addSelf(vec);
 		});
 
 		alignment.divideScalar(neighbours.length);
 		cohesion.divideScalar(neighbours.length);
 		separation.divideScalar(neighbours.length);
-		separation.negate(); // we want the vector AWAY, not towards
+		separation.negate(); // we want the opposite vector
 
 		alignment.normalize();
 		cohesion.normalize();
@@ -40,9 +40,9 @@ function boids(agent, neighbours, world, weights) {
 	separation.multiplyScalar(weights.separation);
 
 	var force = alignment;
+	force.addSelf(brownian);
 	force.addSelf(cohesion);
 	force.addSelf(separation);
-	force.addSelf(brownian);
 
 	return force;
 }
@@ -56,9 +56,12 @@ function Agent(position, world) {
 	this.velocity = new Vector2();
 
 	this.step = function(dt) {
+		// temporary vector for vectorDiff
+		var vec = new Vector2();
+
 		// only agents within 200pixels are neighbours
 		var neighbours = _.filter(world.agents, function(agent) {
-			return (self !== agent)	&& (world.vectorDiff(self.position, agent.position).lengthSq() < 20000);
+			return (self !== agent)	&& (world.vectorDiff(self.position, agent.position, vec).lengthSq() < 20000);
 		});
 
 		// calculate acceleration
