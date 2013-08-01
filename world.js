@@ -1,11 +1,13 @@
 function WrappedWorld(width, height) {
 	var self = this;
+
 	this.agents = [];
 	this.width = width;
 	this.height = height;
 
-	this.offset = function(a, b, tmp) {
-		var d = tmp || new Two.Vector();
+	// calculates the difference between two vectors in world space
+	this.vectorDiff = function(a, b, tmp) {
+		var d = tmp || new Vector2();
 		d.sub(a, b);
 
 		var halfx = self.width / 2;
@@ -26,21 +28,18 @@ function WrappedWorld(width, height) {
 		return d;
 	}
 
+	// maintains world constraints on agent positions
 	this.step = function(dt) {
 		_.each(self.agents, function(agent) {
 			if (agent.position.x < 0) {
 				agent.position.x += self.width;
-			}
-
-			if (agent.position.x > self.width) {
+			} else if (agent.position.x > self.width) {
 				agent.position.x -= self.width;
 			}
 
 			if (agent.position.y < 0) {
 				agent.position.y += self.height;
-			}
-
-			if (agent.position.y > self.height) {
+			} else if (agent.position.y > self.height) {
 				agent.position.y -= self.height;
 			}
 		});

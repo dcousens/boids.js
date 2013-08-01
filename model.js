@@ -1,5 +1,5 @@
 function randomPos(w, h) {
-	return new Two.Vector(Math.random() * w, Math.random() * h);
+	return new Vector2(Math.random() * w, Math.random() * h);
 }
 
 function Model(world) {

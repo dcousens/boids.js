@@ -1,21 +1,24 @@
 function boids(agent, neighbours, world, weights) {
-	var alignment = new Two.Vector().copy(agent.heading);
-	var cohesion = new Two.Vector();
-	var separation = new Two.Vector();
+	var alignment = new Vector2().copy(agent.heading);
+	var cohesion = new Vector2();
+	var separation = new Vector2();
+
+	var theta = Math.random() * 2 * Math.PI;
+	var brownian = new Vector2(Math.sin(theta), Math.cos(theta));
 
 	if (neighbours.length) {
-		var vector = new Two.Vector();
+		var vector = new Vector2();
 
 		_.each(neighbours, function(neighbour) {
 			// alignment is the average of all neighbouring headings
 			alignment.addSelf(neighbour.heading);
 
 			// cohesion is just the centroid of all neighbours
-			vector = world.offset(neighbour.position, agent.position, vector);
+			vector = world.vectorDiff(neighbour.position, agent.position, vector);
 			cohesion.addSelf(vector);
 
 			// influence by inverse of the distance (squared for normalization)
-			var dist = vector.lengthSquared();
+			var dist = vector.lengthSq();
 			vector.divideScalar(dist)
 
 			separation.addSelf(vector);
@@ -32,42 +35,34 @@ function boids(agent, neighbours, world, weights) {
 	}
 
 	alignment.multiplyScalar(weights.alignment);
+	brownian.multiplyScalar(weights.random);
 	cohesion.multiplyScalar(weights.cohesion);
 	separation.multiplyScalar(weights.separation);
 
 	var force = alignment;
 	force.addSelf(cohesion);
 	force.addSelf(separation);
+	force.addSelf(brownian);
 
 	return force;
-}
-
-function randomWalk(agent) {
-	var theta = Math.random() * 2 * Math.PI;
-
-	return new Two.Vector(Math.sin(theta), Math.cos(theta));
 }
 
 function Agent(position, world) {
 	var self = this;
 
 	this.boidWeights = { alignment: 1, cohesion: 4.25, random: 3, separation: 3 };
-	this.heading = new Two.Vector();
+	this.heading = new Vector2();
 	this.position = position;
-	this.velocity = new Two.Vector();
+	this.velocity = new Vector2();
 
 	this.step = function(dt) {
 		// only agents within 200pixels are neighbours
 		var neighbours = _.filter(world.agents, function(agent) {
-			return (self !== agent)	&& (world.offset(self.position, agent.position).lengthSquared() < 20000);
+			return (self !== agent)	&& (world.vectorDiff(self.position, agent.position).lengthSq() < 20000);
 		});
 
-		// calculate acceleration forces
-		var fboids = boids(self, neighbours, world, self.boidWeights);
-		var frandom = randomWalk(self).multiplyScalar(self.boidWeights.random);
-
-		var accel = fboids;
-		accel.addSelf(frandom);
+		// calculate acceleration
+		var accel = boids(self, neighbours, world, self.boidWeights);
 
 		// multiply by dt
 		accel.multiplyScalar(dt);
@@ -76,7 +71,7 @@ function Agent(position, world) {
 		self.velocity.addSelf(accel);
 
 		// apply dampener
-		self.velocity.multiplyScalar(0.995);
+		self.velocity.multiplyScalar(0.99);
 
 		// clamp velocity
 		self.velocity.x = Math.max(-10, Math.min(self.velocity.x, 10));
