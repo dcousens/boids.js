@@ -1,4 +1,4 @@
-function boids(agent, neighbours, world, weights) {
+function boids(agent, world, weights) {
 	var alignment = new Vector2().copy(agent.heading);
 	var cohesion = new Vector2();
 	var separation = new Vector2();
@@ -6,27 +6,35 @@ function boids(agent, neighbours, world, weights) {
 	var theta = Math.random() * 2 * Math.PI;
 	var brownian = new Vector2(Math.sin(theta), Math.cos(theta));
 
-	if (neighbours.length) {
+	var nboids = world.agents.length;
+	if (nboids) {
+		// temporary vector for vectorDiff
 		var vec = new Vector2();
 
-		_.each(neighbours, function(neighbour) {
-			// alignment is the average of all neighbouring headings
+		_.each(neighbours, function(other) {
+			// ignore ourselves
+			if (agent !== other) continue;
+
+			// ignore agents beyond 200pixels
+			if (world.vectorDiff(agent.position, other.position, vec).lengthSq() < 20000) continue;
+
+			// alignment is the average of all nearby agent headings
 			alignment.addSelf(neighbour.heading);
 
-			// cohesion is just the centroid of all neighbours
+			// cohesion is just the centroid of nearby agents
 			vec = world.vectorDiff(neighbour.position, agent.position, vec);
 			cohesion.addSelf(vec);
 
-			// influence by inverse of the distance (squared for normalization)
+			// lastly, calculate separation force from the inverse of the distance (using lengthSq so we can do lazy normalization)
 			var dist = vec.lengthSq();
 			vec.divideScalar(dist)
 
 			separation.addSelf(vec);
 		});
 
-		alignment.divideScalar(neighbours.length);
-		cohesion.divideScalar(neighbours.length);
-		separation.divideScalar(neighbours.length);
+		alignment.divideScalar(nboids);
+		cohesion.divideScalar(nboids);
+		separation.divideScalar(nboids);
 		separation.negate(); // we want the opposite vector
 
 		alignment.normalize();
@@ -56,16 +64,8 @@ function Agent(position, world) {
 	this.velocity = new Vector2();
 
 	this.step = function(dt) {
-		// temporary vector for vectorDiff
-		var vec = new Vector2();
-
-		// only agents within 200pixels are neighbours
-		var neighbours = _.filter(world.agents, function(agent) {
-			return (self !== agent)	&& (world.vectorDiff(self.position, agent.position, vec).lengthSq() < 20000);
-		});
-
 		// calculate acceleration
-		var accel = boids(self, neighbours, world, self.boidWeights);
+		var accel = boids(self, world, self.boidWeights);
 
 		// multiply by dt
 		accel.multiplyScalar(dt);
