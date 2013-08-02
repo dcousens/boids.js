@@ -11,7 +11,9 @@ function boids(agent, world, weights) {
 		// temporary vector for vectorDiff
 		var vec = new Vector2();
 
-		_.each(neighbours, function(other) {
+		for (var i = 0; i < nboids; i++) {
+			var other = world.agents[i];
+
 			// ignore ourselves
 			if (agent !== other) continue;
 
@@ -30,7 +32,7 @@ function boids(agent, world, weights) {
 			vec.divideScalar(dist)
 
 			separation.addSelf(vec);
-		});
+		}
 
 		alignment.divideScalar(nboids);
 		cohesion.divideScalar(nboids);
