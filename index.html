@@ -23,23 +23,34 @@
 		<script src='lib/jquery-2.0.3.min.js'></script>
 		<script src='lib/mediator.min.js'></script>
 		<script src='lib/two.min.js'></script>
-		<script src='lib/underscore.min.js'></script>
+		<script src='lib/stats.min.js'></script>
+		<script src='lib/underscore-min.js'></script>
 		<script>
 			var container = $('#content');
 			var conDom = container[0];
 
 			$(window).load(function () {
+				// boids application
 				var world = new WrappedWorld(window.innerWidth, window.innerHeight);
-
 				var model = new Model(world);
 				var view = new TwoView(conDom, model);
-				view.on('frame', model.step);
+				view.on('frame', function(dt) {
+					model.step(dt);
+					stats.update();
+				});
+
+				// fps display
+				var stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				conDom.appendChild(stats.domElement);
 
 				// spawn 11 by default
 				for (var i = 0; i < 11; ++i) {
 					model.spawn();
 				}
 
+				// various key bindings
 				$(window).keypress(function(event) {
 					event.preventDefault();
 					event.stopPropagation();
@@ -59,6 +70,7 @@
 					}
 				});
 
+				// handle resize events appropriately
 				$(window).resize(function() {
 					world.width = window.innerWidth;
 					world.height = window.innerHeight;
