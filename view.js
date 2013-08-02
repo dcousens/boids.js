@@ -1,5 +1,5 @@
 function TwoView(domElement, model) {
-       // https://gist.github.com/jonobr1/4660204
+	// https://gist.github.com/jonobr1/4660204
 	var hasWebGL = (function() {
 		try {
 			return !!window.WebGLRenderingContext && !!(document.createElement('canvas').getContext('webgl') || document.createElement('canvas').getContext('experimental-webgl'));
