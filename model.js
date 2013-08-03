@@ -11,6 +11,7 @@ function Model(world) {
 
 		self.publish('despawn', agent);
 	}
+	
 	this.spawn = function() {
 		var position = randomPos(self.world.width, self.world.height);
 		var agent = new Agent(position, self.world);
