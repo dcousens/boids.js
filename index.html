@@ -5,15 +5,34 @@
 		<meta name='viewport' content='user-scalable=no'/>
 		<style>
 		#content {
+			background-color: #050505;
 			position: absolute;
-			text-align: center;
 			height: 100%;
 			width: 100%;
+		}
+
+		#info {
+			color: #cccccc;
+			font-family:Monospace;
+			font-size:13px;
+			padding: 5px;
+			position: absolute;
+			text-align:center;
+			top: 0px; width: 100%;
+		}
+
+		a {
+			color: #0080ff;
 		}
 		</style>
 	</head>
 	<body>
 		<div id='content'></div>
+		<div id="info">
+			<a href="http://jonobr1.github.io/two.js/" target="_blank">two.js</a> - boids.js<br/>
+			<strong>a:</strong> spawn boid | <strong>z:</strong> despawn boid<br/>
+		</div>
+
 		<script src='agent.js'></script>
 		<script src='model.js'></script>
 		<script src='vector.js'></script>
@@ -45,8 +64,8 @@
 				stats.domElement.style.top = '0px';
 				conDom.appendChild(stats.domElement);
 
-				// spawn 11 by default
-				for (var i = 0; i < 11; ++i) {
+				// spawn 30 by default
+				for (var i = 0; i < 30; ++i) {
 					model.spawn();
 				}
 

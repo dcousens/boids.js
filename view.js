@@ -7,6 +7,7 @@ function TwoView(domElement, model) {
 	// model bindings
 	model.on('spawn', function(agent) {
 		agent.__2vo = new Two.Polygon(agentVerts, true, false);
+		agent.__2vo.stroke = 'white';
 		agent.__2vo.scale = 5; // TODO: scale based on screensize?
 		agent.__2vo.translation.copy(agent.position);
 
