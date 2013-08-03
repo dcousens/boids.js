@@ -15,16 +15,16 @@ function boids(agent, world, weights) {
 			var other = world.agents[i];
 
 			// ignore ourselves
-			if (agent !== other) continue;
+			if (agent === other) continue;
 
 			// ignore agents beyond 200pixels
-			if (world.vectorDiff(agent.position, other.position, vec).lengthSq() < 20000) continue;
+			if (world.vectorDiff(agent.position, other.position, vec).lengthSq() > 20000) continue;
 
 			// alignment is the average of all nearby agent headings
-			alignment.addSelf(neighbour.heading);
+			alignment.addSelf(other.heading);
 
 			// cohesion is just the centroid of nearby agents
-			vec = world.vectorDiff(neighbour.position, agent.position, vec);
+			vec = world.vectorDiff(other.position, agent.position, vec);
 			cohesion.addSelf(vec);
 
 			// lastly, calculate separation force from the inverse of the distance (using lengthSq so we can do lazy normalization)
