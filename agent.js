@@ -53,6 +53,7 @@ function boids(agent, world, weights) {
 	force.addSelf(brownian);
 	force.addSelf(cohesion);
 	force.addSelf(separation);
+	force.normalize();
 
 	return force;
 }
@@ -62,15 +63,15 @@ function Agent(position, world) {
 
 	this.boidWeights = { alignment: 1, cohesion: 4, random: 3, separation: 3.6 };
 	this.heading = new Vector2();
+	this.maxspeed = 100;
 	this.position = position;
+	this.speed = 10;
 	this.velocity = new Vector2();
 
 	this.step = function(dt) {
 		// calculate acceleration
 		var accel = boids(self, world, self.boidWeights);
-
-		// multiply by dt
-		accel.multiplyScalar(dt);
+		accel.multiplyScalar(self.speed);
 
 		// apply forces
 		self.velocity.addSelf(accel);
@@ -79,14 +80,18 @@ function Agent(position, world) {
 		self.velocity.multiplyScalar(0.995);
 
 		// clamp velocity
-		self.velocity.x = Math.max(-10, Math.min(self.velocity.x, 10));
-		self.velocity.y = Math.max(-10, Math.min(self.velocity.y, 10));
+		self.velocity.x = Math.max(-self.maxspeed, Math.min(self.velocity.x, self.maxspeed));
+		self.velocity.y = Math.max(-self.maxspeed, Math.min(self.velocity.y, self.maxspeed));
 
 		// update heading
 		self.heading.copy(self.velocity);
 		self.heading.normalize();
 
+		// multiply by dt
+		var dv = new Two.Vector().copy(self.velocity);
+		dv.multiplyScalar(dt);
+
 		// update position
-		self.position.addSelf(self.velocity);
+		self.position.addSelf(dv);
 	}
 }
