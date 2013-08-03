@@ -60,7 +60,7 @@ function boids(agent, world, weights) {
 function Agent(position, world) {
 	var self = this;
 
-	this.boidWeights = { alignment: 1, cohesion: 4.25, random: 3, separation: 3 };
+	this.boidWeights = { alignment: 1, cohesion: 4, random: 3, separation: 3.6 };
 	this.heading = new Vector2();
 	this.position = position;
 	this.velocity = new Vector2();
@@ -76,7 +76,7 @@ function Agent(position, world) {
 		self.velocity.addSelf(accel);
 
 		// apply dampener
-		self.velocity.multiplyScalar(0.99);
+		self.velocity.multiplyScalar(0.995);
 
 		// clamp velocity
 		self.velocity.x = Math.max(-10, Math.min(self.velocity.x, 10));
