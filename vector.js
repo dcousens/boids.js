@@ -25,7 +25,7 @@ Vector2.prototype = {
 	},
 
 	clone: function() {
-		return new Vector(this.x, this.y);
+		return new Vector2(this.x, this.y);
 	},
 
 	add: function(v1, v2) {

@@ -1,5 +1,5 @@
 function boids(agent, world, weights) {
-	var alignment = new Vector2().copy(agent.heading);
+	var alignment = agent.heading.clone();
 	var cohesion = new Vector2();
 	var separation = new Vector2();
 
@@ -88,7 +88,7 @@ function Agent(position, world) {
 		self.heading.normalize();
 
 		// multiply by dt
-		var dv = new Two.Vector().copy(self.velocity);
+		var dv = self.velocity.clone();
 		dv.multiplyScalar(dt);
 
 		// update position
