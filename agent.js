@@ -1,15 +1,15 @@
 function boids(agent, world, weights) {
 	var alignment = agent.heading.clone();
-	var cohesion = new Vector2();
-	var separation = new Vector2();
+	var cohesion = new Two.Vector();
+	var separation = new Two.Vector();
 
 	var theta = Math.random() * 2 * Math.PI;
-	var brownian = new Vector2(Math.sin(theta), Math.cos(theta));
+	var brownian = new Two.Vector(Math.sin(theta), Math.cos(theta));
 
 	var nboids = world.agents.length;
 	if (nboids) {
 		// temporary vector for vectorDiff
-		var vec = new Vector2();
+		var vec = new Two.Vector();
 
 		for (var i = 0; i < nboids; i++) {
 			var other = world.agents[i];
@@ -18,7 +18,7 @@ function boids(agent, world, weights) {
 			if (agent === other) continue;
 
 			// ignore agents beyond 200pixels
-			if (world.vectorDiff(agent.position, other.position, vec).lengthSq() > 20000) continue;
+			if (world.vectorDiff(agent.position, other.position, vec).lengthSquared() > 20000) continue;
 
 			// alignment is the average of all nearby agent headings
 			alignment.addSelf(other.heading);
@@ -28,7 +28,7 @@ function boids(agent, world, weights) {
 			cohesion.addSelf(vec);
 
 			// lastly, calculate separation force from the inverse of the distance (using lengthSq so we can do lazy normalization)
-			var dist = vec.lengthSq();
+			var dist = vec.lengthSquared();
 			vec.divideScalar(dist)
 
 			separation.addSelf(vec);
@@ -62,11 +62,11 @@ function Agent(position, world) {
 	var self = this;
 
 	this.boidWeights = { alignment: 1, cohesion: 4, random: 3, separation: 3.6 };
-	this.heading = new Vector2();
+	this.heading = new Two.Vector();
 	this.maxspeed = 100;
 	this.position = position;
 	this.speed = 10;
-	this.velocity = new Vector2();
+	this.velocity = new Two.Vector();
 
 	this.step = function(dt) {
 		// calculate acceleration

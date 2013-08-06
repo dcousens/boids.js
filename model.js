@@ -1,5 +1,5 @@
 function randomPos(w, h) {
-	return new Vector2(Math.random() * w, Math.random() * h);
+	return new Two.Vector(Math.random() * w, Math.random() * h);
 }
 
 function Model(world) {
@@ -11,7 +11,7 @@ function Model(world) {
 
 		self.publish('despawn', agent);
 	}
-	
+
 	this.spawn = function() {
 		var position = randomPos(self.world.width, self.world.height);
 		var agent = new Agent(position, self.world);
