@@ -23,7 +23,7 @@ function Model(world) {
 	this.step = function(dt) {
 		self.world.step(dt);
 
-		_.each(self.world.agents, function(agent) {
+		self.world.agents.forEach(function(agent) {
 			agent.step(dt);
 		});
 

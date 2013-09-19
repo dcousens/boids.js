@@ -30,7 +30,7 @@ function WrappedWorld(width, height) {
 
 	// maintains world constraints on agent positions
 	this.step = function(dt) {
-		_.each(self.agents, function(agent) {
+		self.agents.forEach(function(agent) {
 			if (agent.position.x < 0) {
 				agent.position.x += self.width;
 			} else if (agent.position.x > self.width) {

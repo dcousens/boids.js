@@ -15,7 +15,7 @@ function TwoView(domElement, model) {
 		two.add(agent.__2vo);
 	});
 	model.on('step', function(dt) {
-		_.each(model.world.agents, function(agent) {
+		model.world.agents.forEach(function(agent) {
 			agent.__2vo.translation._x = agent.position.x;
 			agent.__2vo.translation._y = agent.position.y;
 			agent.__2vo.translation.trigger(Two.Events.change);
