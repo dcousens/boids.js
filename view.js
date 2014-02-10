@@ -5,7 +5,10 @@ function TwoView(domElement, model) {
 	var agentVerts = [new Two.Vector(0, 0)];
 
 	// model bindings
-	model.on('despawn', function(agent) { two.remove(agent.__2vo); });
+	model.on('despawn', function(agent) {
+		two.remove(agent.__2vo);
+	});
+	
 	model.on('spawn', function(agent) {
 		agent.__2vo = new Two.Polygon(agentVerts, true, false);
 		agent.__2vo.stroke = 'white';
@@ -14,6 +17,7 @@ function TwoView(domElement, model) {
 
 		two.add(agent.__2vo);
 	});
+	
 	model.on('step', function(dt) {
 		model.world.agents.forEach(function(agent) {
 			agent.__2vo.translation._x = agent.position.x;
