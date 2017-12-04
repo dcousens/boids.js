@@ -1,5 +1,4 @@
-Boids.js
-========
+# Boids.js
 
 A boids simulation written in Javascript using [two.js](http://jonobr1.github.io/two.js/).
 
